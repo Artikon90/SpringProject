@@ -39,4 +39,8 @@ public class UserDAO {
         User userToEdit = getUserById(id);
         userToEdit.setName(user.getName());
     }
+
+    public void deleteUser(int id) {
+        allUsers.removeIf(p -> p.getId() == id);
+    }
 }

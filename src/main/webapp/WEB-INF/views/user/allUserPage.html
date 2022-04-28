@@ -7,6 +7,10 @@
 <body>
 <div th:each="users : ${allUserData}">
     <a th:href="@{/users/{id}(id=${users.getId()})}" th:text="${users.getName()}">user</a>
+    <hr/>
 </div>
+<br/>
+<hr/>
+<a href="/users/add">Create new user!</a>
 </body>
 </html>

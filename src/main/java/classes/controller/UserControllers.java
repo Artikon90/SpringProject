@@ -45,5 +45,9 @@ public class UserControllers {
         userDAO.editUser(id, user);
         return "redirect:/users";
     }
-
+@DeleteMapping("/{id}")
+    public String deleteUser(@PathVariable("id") int id) {
+        userDAO.deleteUser(id);
+        return "redirect:/users";
+    }
 }
