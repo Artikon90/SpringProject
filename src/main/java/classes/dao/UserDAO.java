@@ -34,4 +34,9 @@ public class UserDAO {
         user.setId(++userCounter);
         allUsers.add(user);
     }
+
+    public void editUser(int id, User user) {
+        User userToEdit = getUserById(id);
+        userToEdit.setName(user.getName());
+    }
 }

@@ -35,5 +35,15 @@ public class UserControllers {
         userDAO.addUser(user);
         return "redirect:/users";
     }
+@GetMapping("/{id}/edit")
+    public String editUserView(Model model, @PathVariable("id") int id) {
+        model.addAttribute("userToEdit", userDAO.getUserById(id));
+        return "user/editUserPage";
+    }
+@PatchMapping("/{id}")
+    public String editUser(@ModelAttribute("userToEdit") User user, @PathVariable("id") int id) {
+        userDAO.editUser(id, user);
+        return "redirect:/users";
+    }
 
 }
