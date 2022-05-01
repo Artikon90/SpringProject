@@ -13,13 +13,13 @@ public class UserDAO {
 
     {
         allUsers = new ArrayList<>();
-        allUsers.add(new User(++userCounter, "Jack"));
-        allUsers.add(new User(++userCounter, "Sasha"));
-        allUsers.add(new User(++userCounter, "Glenn"));
-        allUsers.add(new User(++userCounter, "Mark"));
-        allUsers.add(new User(++userCounter, "Mary"));
-        allUsers.add(new User(++userCounter, "Alex"));
-        allUsers.add(new User(++userCounter, "Max"));
+        allUsers.add(new User(++userCounter, "Jack", "aboba@mail.com", 24));
+        allUsers.add(new User(++userCounter, "Sasha", "google@google.com", 43));
+        allUsers.add(new User(++userCounter, "Glenn", "glenn123@noob.org", 28));
+        allUsers.add(new User(++userCounter, "Mark", "marksman@yahoo.com", 32));
+        allUsers.add(new User(++userCounter, "Mary", "todotodo@test.jp", 10));
+        allUsers.add(new User(++userCounter, "Alex", "oldman@rambler.org", 64));
+        allUsers.add(new User(++userCounter, "Max", "maximus@google.nl", 31));
     }
 
     public List<User> getAllUsers() {
@@ -38,6 +38,8 @@ public class UserDAO {
     public void editUser(int id, User user) {
         User userToEdit = getUserById(id);
         userToEdit.setName(user.getName());
+        userToEdit.setAge(user.getAge());
+        userToEdit.setEmail(user.getEmail());
     }
 
     public void deleteUser(int id) {
