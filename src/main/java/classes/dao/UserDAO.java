@@ -49,20 +49,49 @@ public class UserDAO {
     }
 
     public User getUserById(int id) {
-        return null;
-//        return allUsers.stream().filter(user -> user.getId() == id).findAny().orElse(null);
+        User user = null;
+        try {
+            PreparedStatement getUserSql = connection.prepareStatement(
+                    "SELECT * FROM alluser WHERE id = ?");
+            getUserSql.setInt(1, id);
+            ResultSet res = getUserSql.executeQuery();
+            user = new User();
+            res.next();
+            user.setId(res.getInt("id"));
+            user.setName(res.getString("name"));
+            user.setEmail(res.getString("email"));
+            user.setAge(res.getInt("age"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     public void addUser(User user) {
-//        user.setId(++userCounter);
-//        allUsers.add(user);
+        try {
+            PreparedStatement addUserSql = connection.prepareStatement(
+                    "INSERT INTO alluser(name, email, age) VALUES (?, ?, ?)");
+            addUserSql.setString(1, user.getName());
+            addUserSql.setString(2, user.getEmail());
+            addUserSql.setInt(3, user.getAge());
+            addUserSql.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void editUser(int id, User user) {
-        User userToEdit = getUserById(id);
-        userToEdit.setName(user.getName());
-        userToEdit.setAge(user.getAge());
-        userToEdit.setEmail(user.getEmail());
+    public void editUser(int id, User userUpdate) {
+        try {
+            PreparedStatement editUserSql = connection.prepareStatement(
+                    "UPDATE alluser SET name=?, email=?, age=? WHERE id=?");
+            editUserSql.setString(1, userUpdate.getName());
+            editUserSql.setString(2, userUpdate.getEmail());
+            editUserSql.setInt(3, userUpdate.getAge());
+            editUserSql.setInt(4, id);
+            editUserSql.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteUser(int id) {
