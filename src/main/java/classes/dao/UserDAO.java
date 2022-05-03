@@ -2,14 +2,13 @@ package classes.dao;
 
 import classes.models.User;
 import org.springframework.stereotype.Component;
-
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
 public class UserDAO {
-    private static int userCounter;
     private static final String URL = "jdbc:postgresql://localhost:5432/spring_project";
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = "123456";
@@ -45,6 +44,7 @@ public class UserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        Collections.sort(allUserList);
         return allUserList;
     }
 
@@ -95,6 +95,14 @@ public class UserDAO {
     }
 
     public void deleteUser(int id) {
-//        allUsers.removeIf(p -> p.getId() == id);
+        try {
+            PreparedStatement deleteUserSql = connection.prepareStatement(
+                "DELETE FROM alluser WHERE id=?");
+            deleteUserSql.setInt(1, id);
+            deleteUserSql.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 }

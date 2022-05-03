@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User implements Comparable<User> {
     private int id;
 
     @NotEmpty(message = "Name should be not empty")
@@ -24,4 +24,9 @@ public class User {
 
     @Min(value = 0, message = "Age should be positive")
     private int age;
+
+    @Override
+    public int compareTo(User o) {
+        return this.getId() - o.getId();
+    }
 }
