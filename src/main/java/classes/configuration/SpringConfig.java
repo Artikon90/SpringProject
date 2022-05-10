@@ -17,12 +17,11 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import javax.sql.DataSource;
-import java.util.Properties;
 
 @Configuration
 @ComponentScan("classes")
 @EnableWebMvc
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:db.properties")
 public class SpringConfig implements WebMvcConfigurer {
     @Value("${spring.datasource.driver-class-name}")
         String classname;

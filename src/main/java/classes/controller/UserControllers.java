@@ -2,6 +2,7 @@ package classes.controller;
 
 import classes.dao.UserDAO;
 import classes.models.User;
+import classes.util.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +14,11 @@ import javax.validation.Valid;
 @RequestMapping("/users")
 public class UserControllers {
     private final UserDAO userDAO;
+    private final UserValidator userValidator;
     @Autowired
-    UserControllers(UserDAO userDAO) {
+    UserControllers(UserDAO userDAO, UserValidator userValidator) {
         this.userDAO = userDAO;
+        this.userValidator = userValidator;
     }
 @GetMapping()
     public String getAllUsers(Model model) {
@@ -33,23 +36,25 @@ public class UserControllers {
         return "user/newUser";
     }
 @PostMapping()
-    public String addUser(@Valid @ModelAttribute("userToAdd") User user,
-                          BindingResult bindingResult) {
-        if(bindingResult.hasErrors())
-            return "user/newUser";
+public String addUser(@Valid @ModelAttribute("userToAdd") User user,
+                      BindingResult bindingResult) {
+    userValidator.validate(user, bindingResult);
+    if(bindingResult.hasErrors())
+        return "user/newUser";
 
-        userDAO.addUser(user);
-        return "redirect:/users";
-    }
+    userDAO.addUser(user);
+    return "redirect:/users";
+}
 @GetMapping("/{id}/edit")
-    public String editUserView(Model model, @PathVariable("id") int id) {
+    public String editUserPage(Model model, @PathVariable("id") int id) {
         model.addAttribute("userToEdit", userDAO.getUserById(id));
         return "user/editUserPage";
     }
 @PatchMapping("/{id}")
     public String editUser(@Valid @ModelAttribute("userToEdit") User user, BindingResult bindingResult,
-                           @PathVariable("id") int id) {
-        if(bindingResult.hasErrors())
+                       @PathVariable("id") int id) {
+        userValidator.validate(user, bindingResult);
+        if (bindingResult.hasErrors())
             return "user/editUserPage";
 
         userDAO.editUser(id, user);

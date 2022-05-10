@@ -5,15 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-//import java.sql.*;
-//import java.util.ArrayList;
-//import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class UserDAO {
     private final JdbcTemplate jdbcTemplate;
-@Autowired
+    @Autowired
     public UserDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -27,9 +25,14 @@ public class UserDAO {
                 new BeanPropertyRowMapper<>(User.class), id).stream().findAny().orElse(null);
     }
 
+    public Optional<User> getUserByEmail(String email) {
+        return jdbcTemplate.query("SELECT * FROM alluser WHERE email=?",
+                new BeanPropertyRowMapper<>(User.class), email).stream().findAny();
+    }
+
     public void addUser(User user) {
         jdbcTemplate.update("INSERT INTO alluser(name, email, age) VALUES(?, ?, ?)",
-                            user.getName(), user.getEmail(), user.getAge());
+                user.getName(), user.getEmail(), user.getAge());
     }
 
     public void editUser(int id, User userUpdate) {
