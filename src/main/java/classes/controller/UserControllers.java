@@ -2,6 +2,7 @@ package classes.controller;
 
 import classes.dao.UserDAO;
 import classes.models.User;
+import classes.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,24 +13,25 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/users")
 public class UserControllers {
-    private final UserDAO userDAO;
+
+    private final UserService userService;
+
     @Autowired
-    UserControllers(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    UserControllers(UserDAO userDAO, UserService userService) {
+        this.userService = userService;
     }
 @GetMapping()
     public String getAllUsers(Model model) {
-        model.addAttribute("allUserData", userDAO.getAllUsers());
+        model.addAttribute("allUserData", userService.findAll());
         return "user/allUserPage";
     }
 @GetMapping("/{id}")
     public String getUserById(@PathVariable("id") int id, Model model) {
-        model.addAttribute("userById", userDAO.getUserById(id));
+        model.addAttribute("userById", userService.findById(id));
         return "user/userPage";
     }
 @GetMapping("/add")
-    public String addNewUser(Model model) {
-        model.addAttribute("userToAdd", new User());
+    public String addNewUser(@ModelAttribute("userToAdd") User user) {
         return "user/newUser";
     }
 @PostMapping()
@@ -38,12 +40,12 @@ public String addUser(@Valid @ModelAttribute("userToAdd") User user,
     if(bindingResult.hasErrors())
         return "user/newUser";
 
-    userDAO.addUser(user);
+    userService.addNewUser(user);
     return "redirect:/users";
 }
 @GetMapping("/{id}/edit")
     public String editUserPage(Model model, @PathVariable("id") int id) {
-        model.addAttribute("userToEdit", userDAO.getUserById(id));
+        model.addAttribute("userToEdit", userService.findById(id));
         return "user/editUserPage";
     }
 @PatchMapping("/{id}")
@@ -52,12 +54,12 @@ public String addUser(@Valid @ModelAttribute("userToAdd") User user,
         if (bindingResult.hasErrors())
             return "user/editUserPage";
 
-        userDAO.editUser(id, user);
+        userService.editUser(id, user);
         return "redirect:/users";
     }
 @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable("id") int id) {
-        userDAO.deleteUser(id);
+        userService.delete(id);
         return "redirect:/users";
     }
 }
