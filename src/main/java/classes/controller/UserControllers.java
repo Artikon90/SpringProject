@@ -2,7 +2,6 @@ package classes.controller;
 
 import classes.dao.UserDAO;
 import classes.models.User;
-import classes.util.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,11 +13,9 @@ import javax.validation.Valid;
 @RequestMapping("/users")
 public class UserControllers {
     private final UserDAO userDAO;
-    private final UserValidator userValidator;
     @Autowired
-    UserControllers(UserDAO userDAO, UserValidator userValidator) {
+    UserControllers(UserDAO userDAO) {
         this.userDAO = userDAO;
-        this.userValidator = userValidator;
     }
 @GetMapping()
     public String getAllUsers(Model model) {
@@ -38,7 +35,6 @@ public class UserControllers {
 @PostMapping()
 public String addUser(@Valid @ModelAttribute("userToAdd") User user,
                       BindingResult bindingResult) {
-    userValidator.validate(user, bindingResult);
     if(bindingResult.hasErrors())
         return "user/newUser";
 
@@ -53,7 +49,6 @@ public String addUser(@Valid @ModelAttribute("userToAdd") User user,
 @PatchMapping("/{id}")
     public String editUser(@Valid @ModelAttribute("userToEdit") User user, BindingResult bindingResult,
                        @PathVariable("id") int id) {
-        userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors())
             return "user/editUserPage";
 

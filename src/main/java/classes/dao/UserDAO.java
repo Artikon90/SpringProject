@@ -1,46 +1,47 @@
 package classes.dao;
 
 import classes.models.User;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class UserDAO {
-    private final JdbcTemplate jdbcTemplate;
+
+    private final SessionFactory sessionFactory;
+
     @Autowired
-    public UserDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public UserDAO(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
+    @Transactional(readOnly = true)
     public List<User> getAllUsers() {
-        return jdbcTemplate.query("SELECT * FROM alluser", new BeanPropertyRowMapper<>(User.class));
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("SELECT a FROM Users a", User.class).getResultList();
     }
-
+    @Transactional(readOnly = true)
     public User getUserById(int id) {
-        return jdbcTemplate.query("SELECT * FROM alluser WHERE id=?",
-                new BeanPropertyRowMapper<>(User.class), id).stream().findAny().orElse(null);
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(User.class, id);
     }
-
-    public Optional<User> getUserByEmail(String email) {
-        return jdbcTemplate.query("SELECT * FROM alluser WHERE email=?",
-                new BeanPropertyRowMapper<>(User.class), email).stream().findAny();
-    }
-
+    @Transactional
     public void addUser(User user) {
-        jdbcTemplate.update("INSERT INTO alluser(name, email, age) VALUES(?, ?, ?)",
-                user.getName(), user.getEmail(), user.getAge());
+        Session session = sessionFactory.getCurrentSession();
+        session.persist(user);
     }
-
+    @Transactional
     public void editUser(int id, User userUpdate) {
-        jdbcTemplate.update("UPDATE alluser SET name = ?, email = ?, age = ? WHERE id = ?",
-                userUpdate.getName(), userUpdate.getEmail(), userUpdate.getAge(), id);
+        Session session = sessionFactory.getCurrentSession();
+        User user = session.get(User.class, id);
+        user.setName(userUpdate.getName());
     }
-
+    @Transactional
     public void deleteUser(int id) {
-        jdbcTemplate.update("DELETE FROM alluser WHERE id = ?", id);
+        Session session = sessionFactory.getCurrentSession();
+        session.remove(session.get(User.class, id));
     }
 }

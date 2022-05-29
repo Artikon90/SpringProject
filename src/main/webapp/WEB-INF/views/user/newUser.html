@@ -10,15 +10,6 @@
     <input type="text" th:field="*{name}" id="name"/>
     <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">error text</div>
     <br />
-    <label style="color:orange" for="email">Input user email: </label>
-    <input type="text" th:field="*{email}" id="email"/>
-    <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">error text</div>
-    <br />
-    <label style="color:orange" for="age">Input user age: </label>
-    <input type="text" th:field="*{age}" id="age"/>
-    <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">error text</div>
-    <br />
-
     <input type="submit" value="Add user"/>
 </form>
 </body>
